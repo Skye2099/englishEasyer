@@ -1,19 +1,28 @@
 import { useState, useMemo } from 'react';
+import { useWords } from '../contexts/WordContext';
+import AddWordModal, { type AddWordFormData } from './AddWordModal';
+import ExportModal from './ExportModal';
 import type { Word } from '../data/words';
+import type { UserWord } from '../utils/storage';
 import './WordList.css';
 
 interface WordListProps {
-  categoryName: string;
-  words: Word[];
+  categoryIndex: number;
   onBack: () => void;
 }
 
-function WordList({ categoryName, words, onBack }: WordListProps) {
-  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+function WordList({ categoryIndex, onBack }: WordListProps) {
+  const { categories, getCategoryWords, addWord, deleteWord, isUserWord } = useWords();
+  const [selectedWord, setSelectedWord] = useState<Word | UserWord | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+
+  const categoryName = categories[categoryIndex].name;
+  const words = getCategoryWords(categoryIndex);
 
   // 按字母分组单词
   const groupedWords = useMemo(() => {
-    const groups: { [key: string]: Word[] } = {};
+    const groups: { [key: string]: (Word | UserWord)[] } = {};
 
     words.forEach((word) => {
       const firstLetter = word.word[0].toUpperCase();
@@ -34,12 +43,25 @@ function WordList({ categoryName, words, onBack }: WordListProps) {
   // 获取排序后的字母列表
   const sortedLetters = Object.keys(groupedWords).sort();
 
-  const handleWordClick = (word: Word) => {
+  const handleWordClick = (word: Word | UserWord) => {
     setSelectedWord(word);
   };
 
   const closeModal = () => {
     setSelectedWord(null);
+  };
+
+  const handleDeleteWord = () => {
+    if (selectedWord && isUserWord(selectedWord)) {
+      if (window.confirm(`确定要删除单词 "${selectedWord.word}" 吗？`)) {
+        deleteWord(selectedWord.id);
+        closeModal();
+      }
+    }
+  };
+
+  const handleAddWordSubmit = (data: AddWordFormData) => {
+    addWord(categoryIndex, data);
   };
 
   return (
@@ -49,7 +71,14 @@ function WordList({ categoryName, words, onBack }: WordListProps) {
           ← 返回
         </button>
         <h1>{categoryName}</h1>
-        <div className="placeholder"></div>
+        <div className="header-actions">
+          <button className="action-btn add-btn" onClick={() => setIsAddModalOpen(true)} title="添加单词">
+            + 添加
+          </button>
+          <button className="action-btn export-btn" onClick={() => setIsExportModalOpen(true)} title="导出数据">
+            ↓ 导出
+          </button>
+        </div>
       </header>
 
       <div className="word-list-container">
@@ -59,11 +88,12 @@ function WordList({ categoryName, words, onBack }: WordListProps) {
             <div className="words-grid">
               {groupedWords[letter].map((word, index) => (
                 <div
-                  key={index}
-                  className="word-card"
+                  key={isUserWord(word) ? word.id : `${word.word}-${index}`}
+                  className={`word-card ${isUserWord(word) ? 'user-word' : ''}`}
                   onClick={() => handleWordClick(word)}
                 >
                   {word.word}
+                  {isUserWord(word) && <span className="user-badge">自定义</span>}
                 </div>
               ))}
             </div>
@@ -82,9 +112,30 @@ function WordList({ categoryName, words, onBack }: WordListProps) {
               <p className="modal-pronunciation">{selectedWord.pronunciation}</p>
             )}
             <p className="modal-annotation">{selectedWord.annotation}</p>
+            {isUserWord(selectedWord) && (
+              <div className="modal-actions">
+                <button className="delete-btn" onClick={handleDeleteWord}>
+                  删除单词
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
+
+      <AddWordModal
+        isOpen={isAddModalOpen}
+        categoryName={categoryName}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddWordSubmit}
+      />
+
+      <ExportModal
+        isOpen={isExportModalOpen}
+        categoryIndex={categoryIndex}
+        categoryName={categoryName}
+        onClose={() => setIsExportModalOpen(false)}
+      />
     </div>
   );
 }

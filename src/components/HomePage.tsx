@@ -1,4 +1,4 @@
-import { categories } from '../data/words';
+import { useWords } from '../contexts/WordContext';
 import './HomePage.css';
 
 interface HomePageProps {
@@ -6,6 +6,8 @@ interface HomePageProps {
 }
 
 function HomePage({ onCategorySelect }: HomePageProps) {
+  const { categories } = useWords();
+
   return (
     <div className="home-page">
       <h1>English Easyer</h1>

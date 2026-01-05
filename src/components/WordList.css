@@ -38,8 +38,41 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-.placeholder {
-  width: 80px;
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.add-btn:hover {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.export-btn:hover {
+  background: rgba(33, 150, 243, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .word-list-container {
@@ -76,6 +109,7 @@
   font-weight: 500;
   color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .word-card:hover {
@@ -83,6 +117,25 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.word-card.user-word {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.word-card.user-word:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 12px rgba(240, 147, 251, 0.4);
+}
+
+.user-badge {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+  opacity: 0.9;
+  font-weight: 400;
 }
 
 /* Modal样式 */
@@ -173,12 +226,58 @@
   color: #333;
   line-height: 1.6;
   margin: 0;
+  margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 12px;
+}
+
+.delete-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #ff3838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+}
+
+.delete-btn:active {
+  transform: translateY(0);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .word-list-header {
+    padding: 1rem 1.5rem;
+  }
+
   .word-list-header h1 {
     font-size: 1.3rem;
+  }
+
+  .back-btn,
+  .action-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .header-actions {
+    gap: 6px;
   }
 
   .words-grid {
@@ -193,3 +292,5 @@
     font-size: 1.5rem;
   }
 }
+
+

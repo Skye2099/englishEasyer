@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import HomePage from './components/HomePage';
 import WordList from './components/WordList';
-import { categories } from './data/words';
+import { WordProvider } from './contexts/WordContext';
 import './App.css';
 
 function App() {
@@ -16,17 +16,18 @@ function App() {
   };
 
   return (
-    <div className="app">
-      {selectedCategory === null ? (
-        <HomePage onCategorySelect={handleCategorySelect} />
-      ) : (
-        <WordList
-          categoryName={categories[selectedCategory].name}
-          words={categories[selectedCategory].words}
-          onBack={handleBack}
-        />
-      )}
-    </div>
+    <WordProvider>
+      <div className="app">
+        {selectedCategory === null ? (
+          <HomePage onCategorySelect={handleCategorySelect} />
+        ) : (
+          <WordList
+            categoryIndex={selectedCategory}
+            onBack={handleBack}
+          />
+        )}
+      </div>
+    </WordProvider>
   );
 }
 

@@ -32,7 +32,6 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -61,3 +60,5 @@
 .category-btn:nth-child(3) {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
+
+
